@@ -12,30 +12,42 @@ const LABELS = {
 } as const;
 
 function replaceLang(pathname: string, nextLang: string) {
-  const parts = pathname.split("/").filter(Boolean); // ["en","work"]
-  if (parts.length === 0) return `/${nextLang}`;
+  const [path, hash] = pathname.split("#");
+  const parts = (path || "").split("/").filter(Boolean);
+  if (parts.length === 0) return `/${nextLang}${hash ? `#${hash}` : ""}`;
   parts[0] = nextLang;
-  return "/" + parts.join("/");
+  return "/" + parts.join("/") + (hash ? `#${hash}` : "");
 }
 
 export default function Header() {
   const pathname = usePathname() || "/en";
   const current = (pathname.split("/").filter(Boolean)[0] || "en") as keyof typeof LABELS;
 
-  const hrefHome = `/${current}`;
-  const hrefWork = `/${current}/work`;
-  const hrefAbout = `/${current}/about`;
-  const hrefContact = `/${current}/contact`;
+  // ✅ Home section anchors (scroll)
+  const hrefHome = `/${current}#top`;
+  const hrefAbout = `/${current}#about`;
+  const hrefWork = `/${current}#projects`;
+  const hrefContact = `/${current}#contact`;
 
   const labels = LABELS[current] ?? LABELS.en;
 
   return (
-    <header style={{ padding: 16, borderBottom: "1px solid #eee" }}>
+    <header
+      style={{
+        padding: 16,
+        borderBottom: "1px solid rgba(255,255,255,0.08)",
+        position: "sticky",
+        top: 0,
+        zIndex: 20,
+        backdropFilter: "blur(10px)",
+        background: "rgba(10,10,12,0.72)",
+      }}
+    >
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <nav style={{ display: "flex", gap: 12 }}>
           <Link href={hrefHome}>{labels.home}</Link>
-          <Link href={hrefWork}>{labels.work}</Link>
           <Link href={hrefAbout}>{labels.about}</Link>
+          <Link href={hrefWork}>{labels.work}</Link>
           <Link href={hrefContact}>{labels.contact}</Link>
         </nav>
 
@@ -44,7 +56,7 @@ export default function Header() {
             const href = replaceLang(pathname, l);
             const active = l === current;
             return (
-              <Link key={l} href={href} style={{ fontWeight: active ? 700 : 400 }}>
+              <Link key={l} href={href} style={{ fontWeight: active ? 800 : 500 }}>
                 {l.toUpperCase()}
               </Link>
             );
