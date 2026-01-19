@@ -1,45 +1,45 @@
-type Params = { lang: string };
+"use client";
 
-function copy(lang: string) {
-  const c = {
-    en: {
-      title: "Contact",
-      body:
-        "For project inquiries, freelance work, or job opportunities, feel free to reach out.",
-      emailLabel: "Email",
-      linkedinLabel: "LinkedIn",
-      note:
-        "No forms, no tracking—just a direct line.",
-    },
-    tr: {
-      title: "İletişim",
-      body:
-        "Proje talepleri, freelance işler veya iş fırsatları için iletişime geçebilirsin.",
-      emailLabel: "E-posta",
-      linkedinLabel: "LinkedIn",
-      note:
-        "Form yok, takip yok—direkt iletişim.",
-    },
-    de: {
-      title: "Kontakt",
-      body:
-        "Fuer Projekte, Freelance-Anfragen oder Jobangebote koennen Sie mich gerne kontaktieren.",
-      emailLabel: "E-Mail",
-      linkedinLabel: "LinkedIn",
-      note:
-        "Keine Formulare, kein Tracking—direkt und klar.",
-    },
-  } as const;
+import { usePathname } from "next/navigation";
 
-  return c[(lang as keyof typeof c) ?? "en"] ?? c.en;
+function getLang(pathname: string) {
+  const seg = pathname.split("/").filter(Boolean)[0] || "en";
+  const l = seg.toLowerCase().slice(0, 2);
+  return l === "tr" || l === "de" || l === "en" ? l : "en";
 }
 
-export default function Contact({ params }: { params: Params }) {
-  const lang = params.lang || "en";
-  const c = copy(lang);
+export default function Contact() {
+  const pathname = usePathname() || "/en";
+  const lang = getLang(pathname);
 
   const email = "cagribozgeyik@gmail.com";
   const linkedin = "https://www.linkedin.com/in/cagri-bozgeyik/";
+
+  const copy = {
+    en: {
+      title: "Contact",
+      body: "For project inquiries, freelance work, or job opportunities, feel free to reach out.",
+      emailLabel: "Email",
+      linkedinLabel: "LinkedIn",
+      note: "No forms, no tracking—just a direct line.",
+    },
+    tr: {
+      title: "İletişim",
+      body: "Proje talepleri, freelance işler veya iş fırsatları için iletişime geçebilirsin.",
+      emailLabel: "E-posta",
+      linkedinLabel: "LinkedIn",
+      note: "Form yok, takip yok—direkt iletişim.",
+    },
+    de: {
+      title: "Kontakt",
+      body: "Fuer Projekte, Freelance-Anfragen oder Jobangebote koennen Sie mich gerne kontaktieren.",
+      emailLabel: "E-Mail",
+      linkedinLabel: "LinkedIn",
+      note: "Keine Formulare, kein Tracking—direkt und klar.",
+    },
+  } as const;
+
+  const c = copy[lang];
 
   return (
     <main style={{ padding: 24, fontFamily: "system-ui", maxWidth: 920, margin: "0 auto" }}>

@@ -1,7 +1,18 @@
-type Params = { lang: string };
+"use client";
 
-function copy(lang: string) {
-  const c = {
+import { usePathname } from "next/navigation";
+
+function getLang(pathname: string) {
+  const seg = pathname.split("/").filter(Boolean)[0] || "en";
+  const l = seg.toLowerCase().slice(0, 2);
+  return l === "tr" || l === "de" || l === "en" ? l : "en";
+}
+
+export default function Work() {
+  const pathname = usePathname() || "/en";
+  const lang = getLang(pathname);
+
+  const copy = {
     en: {
       title: "Work",
       intro:
@@ -21,8 +32,8 @@ function copy(lang: string) {
       outcomeTitle: "Outcome",
       outcomeBody:
         "A working prototype that demonstrates AI capability, product thinking, and clean UX. It’s easy to present in interviews and credible for potential clients.",
-      stackTitle: "Notes",
-      stackBody:
+      notesTitle: "Notes",
+      notesBody:
         "Details like hosting and integrations are intentionally kept minimal at this stage. The goal is a stable, easy-to-maintain showcase.",
     },
     tr: {
@@ -34,18 +45,18 @@ function copy(lang: string) {
         "CV’yi düzenlemeye ve geliştirmeye yardımcı olan, gösteriş değil kullanılabilirlik odaklı bir AI asistanı.",
       problemTitle: "Problem",
       problemBody:
-        "CV inceleme süreçleri zaman alıyor ve tutarsız olabiliyor. İnsanların hızlı ve net, uygulanabilir geri bildirime ihtiyacı var.",
+        "CV inceleme süreçleri zaman alıyor ve tutarsız olabiliyor. İnsanların hızlı, net ve uygulanabilir geri bildirime ihtiyacı var.",
       approachTitle: "Yaklaşım",
       approachBody:
         "Basit bir konuşma akışı ve koruyucu kurallar (guardrails) tasarladım. Hedef: gereksiz karmaşa olmadan, ileride genişleyebilecek gerçekçi bir prototip.",
       solutionTitle: "Çözüm",
       solutionBody:
-        "Kullanıcıdan gerekli girdileri toplayan, iyileştirme önerileri sunan ve daha işe uygun bir CV çıktısı üreten CV odaklı asistan. Demo ve geliştirme için uygun bir yapı.",
+        "Kullanıcıdan girdileri toplayan, iyileştirme önerileri sunan ve daha işe uygun bir CV çıktısı üreten CV odaklı asistan. Demo ve geliştirme için uygun bir yapı.",
       outcomeTitle: "Sonuç",
       outcomeBody:
-        "AI yetkinliğini, ürün düşüncesini ve temiz UX yaklaşımını gösteren çalışan bir prototip. İş görüşmelerinde ve potansiyel müşterilerde güçlü kanıt.",
-      stackTitle: "Not",
-      stackBody:
+        "AI yetkinliğini, ürün düşüncesini ve temiz UX yaklaşımını gösteren çalışan bir prototip. İş görüşmeleri ve potansiyel müşteriler için güçlü kanıt.",
+      notesTitle: "Not",
+      notesBody:
         "Hosting/entegrasyon gibi detaylar bu aşamada bilinçli olarak minimal tutuldu. Hedef: stabil ve bakımı kolay bir vitrin.",
     },
     de: {
@@ -67,31 +78,20 @@ function copy(lang: string) {
       outcomeTitle: "Ergebnis",
       outcomeBody:
         "Ein funktionierender Prototyp, der KI-Kompetenz, Produktdenken und saubere UX zeigt. Gut fuer Interviews und potenzielle Kunden.",
-      stackTitle: "Notiz",
-      stackBody:
+      notesTitle: "Notiz",
+      notesBody:
         "Hosting/Integrationen werden bewusst minimal gehalten. Ziel: ein stabiler, leicht wartbarer Showcase.",
     },
   } as const;
 
-  return c[(lang as keyof typeof c) ?? "en"] ?? c.en;
-}
-
-export default function Work({ params }: { params: Params }) {
-  const lang = params.lang || "en";
-  const c = copy(lang);
+  const c = copy[lang];
 
   return (
     <main style={{ padding: 24, fontFamily: "system-ui", maxWidth: 920, margin: "0 auto" }}>
       <h1 style={{ margin: "16px 0 8px" }}>{c.title}</h1>
       <p style={{ margin: "0 0 24px", opacity: 0.8 }}>{c.intro}</p>
 
-      <section
-        style={{
-          border: "1px solid #eee",
-          borderRadius: 12,
-          padding: 18,
-        }}
-      >
+      <section style={{ border: "1px solid #eee", borderRadius: 12, padding: 18 }}>
         <h2 style={{ margin: "0 0 6px" }}>{c.projectTitle}</h2>
         <p style={{ margin: "0 0 16px", opacity: 0.85 }}>{c.projectTagline}</p>
 
@@ -117,8 +117,8 @@ export default function Work({ params }: { params: Params }) {
           </div>
 
           <div style={{ borderTop: "1px solid #eee", paddingTop: 12 }}>
-            <h3 style={{ margin: "0 0 6px" }}>{c.stackTitle}</h3>
-            <p style={{ margin: 0, opacity: 0.85 }}>{c.stackBody}</p>
+            <h3 style={{ margin: "0 0 6px" }}>{c.notesTitle}</h3>
+            <p style={{ margin: 0, opacity: 0.85 }}>{c.notesBody}</p>
           </div>
         </div>
       </section>

@@ -1,7 +1,18 @@
-type Params = { lang: string };
+"use client";
 
-function copy(lang: string) {
-  const c = {
+import { usePathname } from "next/navigation";
+
+function getLang(pathname: string) {
+  const seg = pathname.split("/").filter(Boolean)[0] || "en";
+  const l = seg.toLowerCase().slice(0, 2);
+  return l === "tr" || l === "de" || l === "en" ? l : "en";
+}
+
+export default function About() {
+  const pathname = usePathname() || "/en";
+  const lang = getLang(pathname);
+
+  const copy = {
     en: {
       title: "About",
       b1Title: "Short background",
@@ -58,12 +69,7 @@ function copy(lang: string) {
     },
   } as const;
 
-  return c[(lang as keyof typeof c) ?? "en"] ?? c.en;
-}
-
-export default function About({ params }: { params: Params }) {
-  const lang = params.lang || "en";
-  const c = copy(lang);
+  const c = copy[lang];
 
   return (
     <main style={{ padding: 24, fontFamily: "system-ui", maxWidth: 920, margin: "0 auto" }}>

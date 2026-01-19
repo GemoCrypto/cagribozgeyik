@@ -1,6 +1,17 @@
-type Params = { lang: string };
+"use client";
 
-function t(lang: string) {
+import { usePathname } from "next/navigation";
+
+function getLang(pathname: string) {
+  const seg = pathname.split("/").filter(Boolean)[0] || "en";
+  const l = seg.toLowerCase().slice(0, 2);
+  return l === "tr" || l === "de" || l === "en" ? l : "en";
+}
+
+export default function Home() {
+  const pathname = usePathname() || "/en";
+  const lang = getLang(pathname);
+
   const copy = {
     en: {
       heroTitle: "Web + AI solutions, built lean and sustainable.",
@@ -55,22 +66,15 @@ function t(lang: string) {
     },
   } as const;
 
-  return copy[(lang as keyof typeof copy) ?? "en"] ?? copy.en;
-}
-
-export default function Home({ params }: { params: Params }) {
-  const lang = params.lang || "en";
-  const c = t(lang);
+  const c = copy[lang];
 
   return (
     <main style={{ padding: 24, fontFamily: "system-ui", maxWidth: 920, margin: "0 auto" }}>
-      {/* HERO */}
       <section style={{ padding: "24px 0" }}>
         <h1 style={{ fontSize: 34, margin: "0 0 8px" }}>{c.heroTitle}</h1>
         <p style={{ margin: 0, opacity: 0.8 }}>{c.heroSub}</p>
       </section>
 
-      {/* WHAT I DO */}
       <section style={{ padding: "24px 0", borderTop: "1px solid #eee" }}>
         <h2 style={{ margin: "0 0 12px" }}>{c.what}</h2>
         <ul style={{ margin: 0, paddingLeft: 18, lineHeight: 1.7 }}>
@@ -80,7 +84,6 @@ export default function Home({ params }: { params: Params }) {
         </ul>
       </section>
 
-      {/* HOW I WORK */}
       <section style={{ padding: "24px 0", borderTop: "1px solid #eee" }}>
         <h2 style={{ margin: "0 0 12px" }}>{c.how}</h2>
         <ul style={{ margin: 0, paddingLeft: 18, lineHeight: 1.7 }}>
@@ -90,7 +93,6 @@ export default function Home({ params }: { params: Params }) {
         </ul>
       </section>
 
-      {/* SELECTED WORK (placeholder) */}
       <section style={{ padding: "24px 0", borderTop: "1px solid #eee" }}>
         <h2 style={{ margin: "0 0 12px" }}>{c.selected}</h2>
         <p style={{ margin: 0, opacity: 0.8 }}>
@@ -98,7 +100,6 @@ export default function Home({ params }: { params: Params }) {
         </p>
       </section>
 
-      {/* CTA */}
       <section style={{ padding: "24px 0", borderTop: "1px solid #eee" }}>
         <h2 style={{ margin: "0 0 12px" }}>{c.cta}</h2>
         <p style={{ margin: 0 }}>
