@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 function getLang(pathname: string) {
@@ -28,6 +29,11 @@ export default function Home() {
       how2: "Ship the simplest working version",
       how3: "Iterate with measurable impact",
       selected: "Selected work",
+      card1Title: "Mono AI / CV Bot",
+      card1Desc: "Invite-only prototype for CV analysis and improvements.",
+      card2Title: "Website AI Chat (Invite-only)",
+      card2Desc: "Embedded assistant to showcase AI capability on a personal site.",
+      viewAll: "View all projects →",
       cta: "Contact",
     },
     tr: {
@@ -45,6 +51,11 @@ export default function Home() {
       how2: "En basit çalışan versiyonu çıkarırım",
       how3: "Ölçülebilir etkiyle iterasyon yaparım",
       selected: "Seçili işler",
+      card1Title: "Mono AI / CV Bot",
+      card1Desc: "CV analiz ve iyileştirme için davetli prototip.",
+      card2Title: "Web Sitesi AI Chat (Davetli)",
+      card2Desc: "Kişisel sitede AI yetkinliğini gösteren gömülü asistan.",
+      viewAll: "Tüm projeler →",
       cta: "İletişim",
     },
     de: {
@@ -62,11 +73,26 @@ export default function Home() {
       how2: "Einfachste funktionierende Version liefern",
       how3: "Iterieren mit messbarem Effekt",
       selected: "Ausgewaehlte Projekte",
+      card1Title: "Mono AI / CV Bot",
+      card1Desc: "Invite-only Prototyp fuer CV-Analyse und Verbesserungen.",
+      card2Title: "Website KI-Chat (Invite-only)",
+      card2Desc: "Eingebetteter Assistent als KI-Showcase auf der Website.",
+      viewAll: "Alle Projekte →",
       cta: "Kontakt",
     },
   } as const;
 
   const c = copy[lang];
+  const workHref = `/${lang}/work`;
+
+  const cardStyle: React.CSSProperties = {
+    border: "1px solid #eee",
+    borderRadius: 12,
+    padding: 16,
+    textDecoration: "none",
+    color: "inherit",
+    display: "block",
+  };
 
   return (
     <main style={{ padding: 24, fontFamily: "system-ui", maxWidth: 920, margin: "0 auto" }}>
@@ -78,9 +104,15 @@ export default function Home() {
       <section style={{ padding: "24px 0", borderTop: "1px solid #eee" }}>
         <h2 style={{ margin: "0 0 12px" }}>{c.what}</h2>
         <ul style={{ margin: 0, paddingLeft: 18, lineHeight: 1.7 }}>
-          <li><b>{c.what1}:</b> {c.what1s}</li>
-          <li><b>{c.what2}:</b> {c.what2s}</li>
-          <li><b>{c.what3}:</b> {c.what3s}</li>
+          <li>
+            <b>{c.what1}:</b> {c.what1s}
+          </li>
+          <li>
+            <b>{c.what2}:</b> {c.what2s}
+          </li>
+          <li>
+            <b>{c.what3}:</b> {c.what3s}
+          </li>
         </ul>
       </section>
 
@@ -94,10 +126,24 @@ export default function Home() {
       </section>
 
       <section style={{ padding: "24px 0", borderTop: "1px solid #eee" }}>
-        <h2 style={{ margin: "0 0 12px" }}>{c.selected}</h2>
-        <p style={{ margin: 0, opacity: 0.8 }}>
-          Coming next: 2–3 highlighted projects (including the Mono AI / CV bot).
-        </p>
+        <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12 }}>
+          <h2 style={{ margin: "0 0 12px" }}>{c.selected}</h2>
+          <Link href={workHref} style={{ fontSize: 14 }}>
+            {c.viewAll}
+          </Link>
+        </div>
+
+        <div style={{ display: "grid", gap: 12, gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))" }}>
+          <Link href={workHref} style={cardStyle}>
+            <div style={{ fontWeight: 700, marginBottom: 6 }}>{c.card1Title}</div>
+            <div style={{ opacity: 0.85, lineHeight: 1.6 }}>{c.card1Desc}</div>
+          </Link>
+
+          <Link href={workHref} style={cardStyle}>
+            <div style={{ fontWeight: 700, marginBottom: 6 }}>{c.card2Title}</div>
+            <div style={{ opacity: 0.85, lineHeight: 1.6 }}>{c.card2Desc}</div>
+          </Link>
+        </div>
       </section>
 
       <section style={{ padding: "24px 0", borderTop: "1px solid #eee" }}>
