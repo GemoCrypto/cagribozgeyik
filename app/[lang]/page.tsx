@@ -102,7 +102,7 @@ export default function Home({ params }: { params: Params }) {
       <section style={{ padding: "24px 0", borderTop: "1px solid #eee" }}>
         <h2 style={{ margin: "0 0 12px" }}>{c.cta}</h2>
         <p style={{ margin: 0 }}>
-          Email: <a href="mailto:you@example.com">you@example.com</a>
+          Email: <a href="mailto:cagribozgeyik@gmail.com">cagribozgeyik@gmail.com</a>
         </p>
       </section>
     </main>
