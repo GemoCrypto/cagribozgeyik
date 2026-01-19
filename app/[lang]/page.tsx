@@ -561,7 +561,7 @@ export default function Home() {
   }: {
     title: string;
     meta?: string;
-    bullets: string[];
+    bullets: readonly string[];
     href?: string;
     cta?: string;
     ctaTone?: "accent" | "link";
@@ -722,18 +722,24 @@ export default function Home() {
           <p style={{ margin: "0 0 14px", color: theme.accentText, lineHeight: 1.7 }}>{c.projectsIntro}</p>
 
           <div style={{ display: "grid", gap: 12, gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))" }}>
-            {c.projects.map((p) => (
+            {c.projects.map((p) => {
+              const href = "href" in p ? p.href : undefined;
+              const cta = "cta" in p ? p.cta : undefined;
+
+              return (
               <Card
-                key={p.title}
+                key={`${p.title}-${p.meta ?? ""}`}
                 title={p.title}
                 meta={p.meta}
                 bullets={p.bullets}
-                href={p.href}
-                cta={p.cta}
+                href={"href" in p ? p.href : undefined}
+                cta={"cta" in p ? p.cta : undefined}
                 // ✅ CTA kahverengi değil (okunur/kontrast)
                 ctaTone="link"
-              />
-            ))}
+               />
+              );
+                
+            })}
           </div>
         </section>
 
