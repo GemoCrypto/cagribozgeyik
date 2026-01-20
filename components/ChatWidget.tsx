@@ -22,7 +22,7 @@ export default function ChatWidget() {
   const t = useMemo(() => {
     const copy = {
       en: {
-        btn: "AI Chat",
+        btn: "Mono AI Chat",
         title: "AI Assistant",
         chatTab: "Chat",
         inviteTab: "Request Invite",
@@ -33,7 +33,7 @@ export default function ChatWidget() {
         emailCta: "Send email →",
       },
       tr: {
-        btn: "AI Chat",
+        btn: "Mono AI Chat",
         title: "AI Asistan",
         chatTab: "Chat",
         inviteTab: "Davet İste",
@@ -44,7 +44,7 @@ export default function ChatWidget() {
         emailCta: "E-posta gönder →",
       },
       de: {
-        btn: "AI Chat",
+        btn: "Mono AI Chat",
         title: "KI Assistent",
         chatTab: "Chat",
         inviteTab: "Invite anfragen",

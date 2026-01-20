@@ -119,7 +119,7 @@ export default function Home() {
             "Focused on ethical decision modeling and adaptive AI behavior.",
           ],
           cta: "Live demo (invite-only)",
-          href: "https://mono-ai-bot-web.vercel.app",
+          href: "https://tinyurl.com/mono-ai-demo",
         },
         {
           title: "grauhirsch.at — Business Website (Next.js)",
@@ -286,7 +286,7 @@ export default function Home() {
             "Etik karar modelleme ve adaptif davranış odaklı.",
           ],
           cta: "Canlı demo (davetiyeli)",
-          href: "https://mono-ai-bot-web.vercel.app",
+          href: "https://tinyurl.com/mono-ai-demo",
         },
         {
           title: "grauhirsch.at — Kurumsal Website (Next.js)",
@@ -461,7 +461,7 @@ export default function Home() {
             "Fokus auf ethische Entscheidungsmodelle und adaptives Verhalten.",
           ],
           cta: "Live-Demo (nur mit Einladung)",
-          href: "https://mono-ai-bot-web.vercel.app",
+          href: "https://tinyurl.com/mono-ai-demo",
         },
         {
           title: "grauhirsch.at — Unternehmenswebsite (Next.js)",
