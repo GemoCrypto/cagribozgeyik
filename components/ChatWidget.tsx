@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 
 function getLang(pathname: string) {
@@ -16,36 +16,39 @@ export default function ChatWidget() {
   const pathname = usePathname() || "/en";
   const lang = getLang(pathname);
 
-  // 🔒 ORİJİNAL PRIVATE LINK – DEĞİŞMEDİ
+  // ✅ ORİJİNAL MONO AI BOT LİNKİN (HASH #p=... KORUNUR)
   const BOT_URL =
-    "https://mono-ai-bot-web.vercel.app/chat#p=ewogICJwZXJzb25hX2lkIjogImJvemdleWlrMSIsCiAgInBlcnNvbl9uYW1lIjogIsOHYcSfcsSxIEJvemdleWlrIiwKICAicHJlZmVycmVkX3RvbmUiOiAiY29uY2lzZSIsCiAgImxhbmd1YWdlX3ByZWZlcmVuY2UiOiAiRW5nbGlzaCIsCiAgImV0aGljcyI6IHsKICAgICJydWxlX2ZsZXhpYmlsaXR5IjogIm91dGNvbWVfYmFzZWQiLAogICAgInByZXNzdXJlX3Jlc3BvbnNlIjogInNpZ25hbCIsCiAgICAidmVyYmFsX29yZGVyX3BvbGljeSI6ICJzbG93X2Rvd24iLAogICAgInJlc3BvbnNpYmlsaXR5X3BocmFzZSI6ICJjb250ZXh0dWFsIiwKICAgICJ3aGlzdGxlX3RlbmRlbmN5IjogImVzY2FsYXRlIiwKICAgICJzaWxlbmNlX3RocmVzaG9sZCI6ICJjb25kaXRpb25hbCIsCiAgICAiZXRoaWNzX2FuY2hvciI6ICJwZXJzb25hbCIsCiAgICAiY3Jpc2lzX2V0aGljc19zaGlmdCI6ICJmbGV4aWJsZSIsCiAgICAiZXRoaWNhbF9zZWxmX3ZpZXciOiAidW5jaGFuZ2VkIgogIH0sCiAgImN2IjogewogICAgImZpbGUiOiAiaHR0cHM6Ly9kcml2ZS5nb29nbGUuY29tL29wZW4_aWQ9";
+    "https://mono-ai-bot-web.vercel.app/chat#p=ewogICJwZXJzb25hX2lkIjogImJvemdleWlrMSIsCiAgInBlcnNvbl9uYW1lIjogIsOHYcSfcsSxIEJvemdleWlrIiwKICAicHJlZmVycmVkX3RvbmUiOiAiY29uY2lzZSIsCiAgImxhbmd1YWdlX3ByZWZlcmVuY2UiOiAiRW5nbGlzaCIsCiAgImV0aGljcyI6IHsKICAgICJydWxlX2ZsZXhpYmlsaXR5IjogIm91dGNvbWVfYmFzZWQiLAogICAgInByZXNzdXJlX3Jlc3BvbnNlIjogInNpZ25hbCIsCiAgICAidmVyYmFsX29yZGVyX3BvbGljeSI6ICJzbG93X2Rvd24iLAogICAgInJlc3BvbnNpYmlsaXR5X3BocmFzZSI6ICJjb250ZXh0dWFsIiwKICAgICJ3aGlzdGxlX3RlbmRlbmN5IjogImVzY2FsYXRlIiwKICAgICJzaWxlbmNlX3RocmVzaG9sZCI6ICJjb25kaXRpb25hbCIsCiAgICAiZXRoaWNzX2FuY2hvciI6ICJwZXJzb25hbCIsCiAgICAiY3Jpc2lzX2V0aGljc19zaGlmdCI6ICJmbGV4aWJsZSIsCiAgICAiZXRoaWNhbF9zZWxmX3ZpZXciOiAidW5jaGFuZ2VkIgogIH0sCiAgImN2IjogewogICAgImZpbGUiOiAiaHR0cHM6Ly9kcml2ZS5nb29nbGUuY29tL29wZW4_aWQ9MU13blBNckM1Y3RNMC1TS0JTNXlScElvWVVaRy1MVmJBIiwKICAgICJub3RlcyI6ICLDh0HEnlJJIEJPWkdFWcSwSyBcbkZFQVNJQklMSVRZIEFORCBJTk5PVkFUSU9OLUZPQ1VTRUQgUFJPSkVDVCBBRFZJU09SIFxu77-977-9IFZpZW5uYSwgQXVzdHJpYSB8IO-_ve-_vSBjYWdyaWJvemdleWlrQGdtYWlsLmNvbSB8IO-_ve-_vSs0MyA2NzYgNjY4IDYzMDAgXG4QUk9GRVNTSU9OQUwgUFJPRklMRSBcbk11bHRpZGlzY2lwbGluYXJ5IGNvbnN1bHRhbnQgc3BlY2lhbGl6aW5nIGluIHByb2R1Y3Rpb24gc3RyYXRlZ2llcywgZmVhc2liaWxpdHkgc3R1ZGllcywgYW5kIGlubm92YXRpb24tZm9jdXNlZCBwcm9qZWN0cyBhY3Jvc3MgbWFudWZhY3R1cmluZywgYmlvdGVjaG5vbG9neSwgYW5kIGFncmljdWx0dXJhbCB0ZWNobm9sb2dpZXMuIEV4cGVyaWVuY2VkIGluIGxlYWRpbmcgdGVjaG5pY2FsIHByb2Nlc3NlcywgcXVhbGl0eSBjb250cm9sLCBhbmQgbWFya2V0IGVudHJ5IHN0cmF0ZWdpZXMgZm9yIGludGVybmF0aW9uYWwgY29tcGFuaWVzLiIsCiAgICAic3VtbWFyeSI6ICJJIGFtIGEgc3lzdGVtLW9yaWVudGVkIHRlY2hub2xvZ2lzdCB3aXRoIGEgc3Ryb25nIGZvY3VzIG9uIGJ1aWxkaW5nIHJlbGlhYmxlLCBjb250cm9sbGFibGUsIGFuZCBwdXJwb3NlLWRyaXZlbiBwcm9kdWN0cyByYXRoZXIgdGhhbiBleHBlcmltZW50YWwgb3IgcHVyZWx5IHRoZW9yZXRpY2FsIHNvbHV0aW9ucy5cbi4uLiIKICB9Cn0";
 
   const t = useMemo(() => {
     const copy = {
       en: {
         btn: "Mono AI Chat",
         title: "Mono AI Chat",
+        chatTab: "Chat",
+        inviteTab: "Request Invite",
         inviteTitle: "Request access",
-        inviteText:
-          "If you want access to the full version, email me with a short note about your use case.",
+        inviteText: "If you want access to the full version, email me with a short note about your use case.",
         email: "cagribozgeyik@gmail.com",
         emailCta: "Send email →",
       },
       tr: {
         btn: "Mono AI Chat",
         title: "Mono AI Chat",
+        chatTab: "Chat",
+        inviteTab: "Davet İste",
         inviteTitle: "Erişim iste",
-        inviteText:
-          "Tam sürüm erişimi için kullanım amacını kısaca yazarak bana e-posta at.",
+        inviteText: "Tam sürüm erişimi için kullanım amacını kısaca yazarak bana e-posta at.",
         email: "cagribozgeyik@gmail.com",
         emailCta: "E-posta gönder →",
       },
       de: {
         btn: "Mono AI Chat",
         title: "Mono AI Chat",
+        chatTab: "Chat",
+        inviteTab: "Invite anfragen",
         inviteTitle: "Zugang anfragen",
-        inviteText:
-          "Fuer Vollzugang: kurze Beschreibung deines Use-Cases per E-Mail senden.",
+        inviteText: "Fuer Vollzugang: kurze Beschreibung deines Use-Cases per E-Mail senden.",
         email: "cagribozgeyik@gmail.com",
         emailCta: "E-Mail senden →",
       },
@@ -59,15 +62,37 @@ export default function ChatWidget() {
     panelBorder: "1px solid rgba(255,255,255,0.10)",
     text: "rgba(255,255,255,0.92)",
     muted: "rgba(255,255,255,0.65)",
+    subtle: "rgba(255,255,255,0.08)",
     accent: "rgba(255,255,255,0.10)",
     shadow: "0 14px 50px rgba(0,0,0,0.55)",
   } as const;
 
-  const mailto = `mailto:${t.email}?subject=Mono%20AI%20Invite%20Request`;
+  const mailto = `mailto:${t.email}?subject=Mono%20AI%20Invite%20Request&body=Hi%20Cagri,%0A%0AI%20want%20access%20to%20the%20Mono%20AI%20bot.%0AUse%20case:%20...%0A%0AThanks`;
+
+  // ✅ Persona not found uyarısını azaltmak için: iframe önce blank, sonra replace()
+  const iframeRef = useRef<HTMLIFrameElement | null>(null);
+
+  useEffect(() => {
+    if (!open || tab !== "chat") return;
+
+    const iframe = iframeRef.current;
+    if (!iframe) return;
+
+    // iOS/Safari bazen ref ilk anda hazır olmuyor
+    const id = window.setTimeout(() => {
+      try {
+        iframe.contentWindow?.location.replace(BOT_URL);
+      } catch {
+        // Cross-origin/blocked durumlarda zaten iframe src kullanılacak
+      }
+    }, 0);
+
+    return () => window.clearTimeout(id);
+  }, [open, tab, BOT_URL]);
 
   return (
     <>
-      {/* 🔧 MOBİL TAM EKRAN */}
+      {/* ✅ Mobilde panel tam ekran */}
       <style>{`
         .monoai-panel {
           position: fixed;
@@ -75,17 +100,23 @@ export default function ChatWidget() {
           right: 20px;
           width: 420px;
           height: 600px;
+          max-width: calc(100vw - 40px);
+          max-height: calc(100svh - 40px);
           border-radius: 16px;
+          z-index: 1001;
+          overflow: hidden;
         }
         @media (max-width: 520px) {
           .monoai-panel {
-            top: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
-            bottom: 0 !important;
-            width: 100vw !important;
-            height: 100svh !important;
-            border-radius: 0 !important;
+            left: 12px !important;
+            right: 12px !important;
+            top: 12px !important;
+            bottom: 12px !important;
+            width: auto !important;
+            height: auto !important;
+            max-width: none !important;
+            max-height: none !important;
+            border-radius: 14px !important;
           }
         }
       `}</style>
@@ -106,6 +137,8 @@ export default function ChatWidget() {
             cursor: "pointer",
             boxShadow: styles.shadow,
             fontWeight: 700,
+            backdropFilter: "blur(10px)",
+            WebkitBackdropFilter: "blur(10px)",
           }}
         >
           {t.btn}
@@ -119,11 +152,11 @@ export default function ChatWidget() {
             background: styles.panelBg,
             color: styles.text,
             border: styles.panelBorder,
-            zIndex: 1001,
             boxShadow: styles.shadow,
             display: "flex",
             flexDirection: "column",
-            overflow: "hidden",
+            backdropFilter: "blur(14px)",
+            WebkitBackdropFilter: "blur(14px)",
           }}
         >
           {/* Header */}
@@ -133,37 +166,108 @@ export default function ChatWidget() {
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
+              borderBottom: `1px solid ${styles.subtle}`,
               fontWeight: 800,
-              borderBottom: `1px solid ${styles.accent}`,
+              flex: "0 0 auto",
             }}
           >
             {t.title}
             <button
               onClick={() => setOpen(false)}
               style={{
-                background: "transparent",
                 border: "none",
-                color: styles.text,
-                fontSize: 18,
+                background: "transparent",
                 cursor: "pointer",
+                fontSize: 18,
+                color: styles.text,
+                lineHeight: 1,
               }}
+              aria-label="Close"
             >
               ×
             </button>
           </div>
 
-          {/* CHAT – DİREKT */}
-          <iframe
-            src={BOT_URL}
-            title="Mono AI Bot"
-            style={{
-              flex: 1,
-              width: "100%",
-              border: "none",
-              background: "transparent",
-            }}
-            allow="clipboard-write; microphone; camera"
-          />
+          {/* Tabs */}
+          <div style={{ display: "flex", borderBottom: `1px solid ${styles.subtle}`, flex: "0 0 auto" }}>
+            <button
+              onClick={() => setTab("chat")}
+              style={{
+                flex: 1,
+                padding: 12,
+                border: "none",
+                background: tab === "chat" ? styles.accent : "transparent",
+                color: styles.text,
+                cursor: "pointer",
+                fontWeight: tab === "chat" ? 800 : 600,
+              }}
+            >
+              {t.chatTab}
+            </button>
+            <button
+              onClick={() => setTab("invite")}
+              style={{
+                flex: 1,
+                padding: 12,
+                border: "none",
+                background: tab === "invite" ? styles.accent : "transparent",
+                color: styles.text,
+                cursor: "pointer",
+                fontWeight: tab === "invite" ? 800 : 600,
+              }}
+            >
+              {t.inviteTab}
+            </button>
+          </div>
+
+          {/* Content */}
+          {tab === "chat" ? (
+            <div
+              style={{
+                flex: "1 1 auto",
+                minHeight: 0, // ✅ iOS/Safari + flex + iframe için kritik
+                overflow: "hidden",
+              }}
+            >
+              <iframe
+                ref={iframeRef}
+                title="Mono AI Bot"
+                // ✅ fallback: eğer replace engellenirse yine de doğru URL açılsın
+                src={BOT_URL}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  border: "none",
+                  background: "transparent",
+                  display: "block",
+                }}
+                allow="clipboard-write; microphone; camera"
+              />
+            </div>
+          ) : (
+            <div style={{ padding: 16, lineHeight: 1.65, overflow: "auto" }}>
+              <div style={{ fontWeight: 900, marginBottom: 8 }}>{t.inviteTitle}</div>
+              <div style={{ color: styles.muted, marginBottom: 14 }}>{t.inviteText}</div>
+
+              <a
+                href={mailto}
+                style={{
+                  display: "inline-block",
+                  padding: "10px 12px",
+                  borderRadius: 12,
+                  border: styles.panelBorder,
+                  background: styles.accent,
+                  color: styles.text,
+                  textDecoration: "none",
+                  fontWeight: 800,
+                }}
+              >
+                {t.emailCta}
+              </a>
+
+              <div style={{ marginTop: 10, fontSize: 12, color: styles.muted }}>{t.email}</div>
+            </div>
+          )}
         </div>
       )}
     </>
