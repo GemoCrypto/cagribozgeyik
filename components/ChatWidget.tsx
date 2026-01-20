@@ -16,11 +16,11 @@ export default function ChatWidget() {
   const pathname = usePathname() || "/en";
   const lang = getLang(pathname);
 
-  // 🔒 Mono AI – HASH ve BASE URL AYRILDI (kritik)
+  // 🔒 Mono AI – BASE + HASH (iframe KULLANILMIYOR)
   const BOT_BASE_URL = "https://mono-ai-bot-web.vercel.app/chat";
   const BOT_HASH =
-    "#p=ewogICJwZXJzb25hX2lkIjogImJvemdleWlrMSIsCiAgInBlcnNvbl9uYW1lIjogIsOHYcSfcsSxIEJvemdleWlrIiwKICAicHJlZmVycmVkX3RvbmUiOiAiY29uY2lzZSIsCiAgImxhbmd1YWdlX3ByZWZlcmVuY2UiOiAiRW5nbGlzaCIsCiAgImV0aGljcyI6IHsKICAgICJydWxlX2ZsZXhpYmlsaXR5IjogIm91dGNvbWVfYmFzZWQiLAogICAgInByZXNzdXJlX3Jlc3BvbnNlIjogInNpZ25hbCIsCiAgICAidmVyYmFsX29yZGVyX3BvbGljeSI6ICJzbG93X2Rvd24iLAogICAgInJlc3BvbnNpYmlsaXR5X3BocmFzZSI6ICJjb250ZXh0dWFsIiwKICAgICJ3aGlzdGxlX3RlbmRlbmN5IjogImVzY2FsYXRlIiwKICAgICJzaWxlbmNlX3RocmVzaG9sZCI6ICJjb25kaXRpb25hbCIsCiAgICAiZXRoaWNzX2FuY2hvciI6ICJwZXJzb25hbCIsCiAgICAiY3Jpc2lzX2V0aGljc19zaGlmdCI6ICJmbGV4aWJsZSIsCiAgICAiZXRoaWNhbF9zZWxmX3ZpZXciOiAidW5jaGFuZ2VkIgogIH0sCiAgImN2IjogewogICAgImZpbGUiOiAiaHR0cHM6Ly9kcml2ZS5nb29nbGUuY29tL29wZW4_aWQ9MU13blBNckM1Y3RNMC1TS0JTNXlScElvWVVaRy1MVmJBIiwKICAgICJub3RlcyI6IC..."
-  
+    "#p=ewogICJwZXJzb25hX2lkIjogImJvemdleWlrMSIsCiAgInBlcnNvbl9uYW1lIjogIsOHYcSfcsSxIEJvemdleWlrIiwKICAicHJlZmVycmVkX3RvbmUiOiAiY29uY2lzZSIsCiAgImxhbmd1YWdlX3ByZWZlcmVuY2UiOiAiRW5nbGlzaCIsCiAgImV0aGljcyI6IHsKICAgICJydWxlX2ZsZXhpYmlsaXR5IjogIm91dGNvbWVfYmFzZWQiLAogICAgInByZXNzdXJlX3Jlc3BvbnNlIjogInNpZ25hbCIsCiAgICAidmVyYmFsX29yZGVyX3BvbGljeSI6ICJzbG93X2Rvd24iLAogICAgInJlc3BvbnNpYmlsaXR5X3BocmFzZSI6ICJjb250ZXh0dWFsIiwKICAgICJ3aGlzdGxlX3RlbmRlbmN5IjogImVzY2FsYXRlIiwKICAgICJzaWxlbmNlX3RocmVzaG9sZCI6ICJjb25kaXRpb25hbCIsCiAgICAiZXRoaWNzX2FuY2hvciI6ICJwZXJzb25hbCIsCiAgICAiY3Jpc2lzX2V0aGljc19zaGlmdCI6ICJmbGV4aWJsZSIsCiAgICAiZXRoaWNhbF9zZWxmX3ZpZXciOiAidW5jaGFuZ2VkIgogIH0sCiAgImN2IjogewogICAgImZpbGUiOiAiaHR0cHM6Ly9kcml2ZS5nb29nbGUuY29tL29wZW4_aWQ9MU13blBNckM1Y3RNMC1TS0JTNXlScElvWVVaRy1MVmJBIiwKICAgICJub3RlcyI6IC4uLiIKICB9Cn0";
+
   const t = useMemo(() => {
     const copy = {
       en: {
@@ -96,7 +96,6 @@ export default function ChatWidget() {
             height: auto !important;
             max-width: none !important;
             max-height: none !important;
-            border-radius: 14px !important;
           }
         }
       `}</style>
@@ -117,7 +116,6 @@ export default function ChatWidget() {
             cursor: "pointer",
             boxShadow: styles.shadow,
             fontWeight: 700,
-            backdropFilter: "blur(10px)",
           }}
         >
           {t.btn}
@@ -136,7 +134,6 @@ export default function ChatWidget() {
             display: "flex",
             flexDirection: "column",
             overflow: "hidden",
-            backdropFilter: "blur(14px)",
           }}
         >
           {/* Header */}
@@ -197,26 +194,36 @@ export default function ChatWidget() {
 
           {/* Content */}
           {tab === "chat" ? (
-            <div style={{ flex: 1, minHeight: 0 }}>
-              <iframe
-                title="Mono AI Bot"
-                src="about:blank"
-                ref={(iframe) => {
-                  if (!iframe) return;
-                  try {
-                    iframe.contentWindow?.location.replace(
-                      BOT_BASE_URL + BOT_HASH
-                    );
-                  } catch {}
-                }}
+            <div
+              style={{
+                flex: 1,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: 20,
+                textAlign: "center",
+              }}
+            >
+              <button
+                onClick={() =>
+                  window.open(
+                    BOT_BASE_URL + BOT_HASH,
+                    "_blank",
+                    "noopener,noreferrer"
+                  )
+                }
                 style={{
-                  width: "100%",
-                  height: "100%",
-                  border: "none",
-                  background: "transparent",
+                  padding: "14px 18px",
+                  borderRadius: 14,
+                  border: styles.panelBorder,
+                  background: styles.accent,
+                  color: styles.text,
+                  fontWeight: 800,
+                  cursor: "pointer",
                 }}
-                allow="clipboard-write; microphone; camera"
-              />
+              >
+                Open Mono AI Chat
+              </button>
             </div>
           ) : (
             <div style={{ padding: 16 }}>
